@@ -172,8 +172,55 @@ df: pl.DataFrame = pl.DataFrame({"word": clean_words})
 # Function chain: group_by() -> len() -> sort()
 freq_df: pl.DataFrame = df.group_by("word").len().sort("len", descending=True)
 
-print("Top 20 most frequent words:")
-print(freq_df.head(20))
+# Common English stop words to exclude from results.
+# These are high-frequency function words that add little analytical value.
+STOP_WORDS: set[str] = {
+    "the",
+    "and",
+    "that",
+    "this",
+    "with",
+    "from",
+    "have",
+    "been",
+    "were",
+    "they",
+    "their",
+    "there",
+    "which",
+    "when",
+    "also",
+    "about",
+    "more",
+    "some",
+    "such",
+    "into",
+    "than",
+    "these",
+    "other",
+    "then",
+    "would",
+    "could",
+    "used",
+    "will",
+    "many",
+    "over",
+    "after",
+    "most",
+    "using",
+    "each",
+    "only",
+    "well",
+    "e.g.",
+}
+
+# Filter out stop words from the frequency DataFrame.
+filtered_df: pl.DataFrame = freq_df.filter(~pl.col("word").is_in(STOP_WORDS))
+
+# Print a clean, human-readable ranked list of the top 20 content words.
+print("Top 20 most frequent words (stop words removed):")
+for rank, row in enumerate(filtered_df.head(20).iter_rows(named=True), start=1):
+    print(f"  {rank:>2}. {row['word']:<20} ({row['len']:,})")
 
 
 # ============================================================
@@ -181,8 +228,8 @@ print(freq_df.head(20))
 # ============================================================
 
 # Focus on the 10 most common words for a simple bar chart.
-# Use head(10) to get the top 10 rows of the frequency DataFrame.
-top_df: pl.DataFrame = freq_df.head(10)
+# Use head(10) to get the top 10 rows of the filtered frequency DataFrame.
+top_df: pl.DataFrame = filtered_df.head(10)
 
 # Make the figure size larger for better readability.
 # 10 inches wide by 5 inches tall is a common size for bar charts.
@@ -204,7 +251,6 @@ plt.title("Most Frequent Words")
 plt.xlabel("Word")
 plt.ylabel("Frequency")
 plt.tight_layout()
-plt.show()
 
 
 # ============================================================
@@ -218,7 +264,7 @@ plt.show()
 # then zip() them together into a dictionary.
 # strict=True ensures both lists are the same length.
 freq_dict: dict[str, int] = dict(
-    zip(freq_df["word"].to_list(), freq_df["len"].to_list(), strict=True)
+    zip(filtered_df["word"].to_list(), filtered_df["len"].to_list(), strict=True)
 )
 print("Sample of word frequencies:")
 for word, freq in list(freq_dict.items())[:10]:
