@@ -82,7 +82,7 @@ open a machine terminal in your `Repos` folder:
 
 ```shell
 # Replace username with YOUR GitHub username.
-git clone https://github.com/username/nlp-01-getting-started
+git clone https://github.com/dsmorgancodes/nlp-01-getting-started
 cd nlp-01-getting-started
 code .
 ```
@@ -106,11 +106,11 @@ uvx pre-commit run --all-files
 
 # First, run the module
 # IMPORTANT: Close each figure after viewing so execution continues
-uv run python -m nlp.web_words_case
+uv run python -m nlp.web_words_dsmorgan
 
 # Then, open the notebook.
 # IMPORTANT: Select the kernel and Run All:
-# notebooks/web_words_case.ipynb
+# notebooks/web_words_dsmorgan.ipynb
 
 uv run ruff format .
 uv run ruff check . --fix

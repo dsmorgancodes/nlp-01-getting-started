@@ -20,7 +20,7 @@ Notes
 
 Run from root project folder with:
 
-  uv run python -m nlp.web_words_case
+  uv run python -m nlp.web_words_dsmorgan.py
 """
 
 # ============================================================
